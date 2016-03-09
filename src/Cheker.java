@@ -1,3 +1,4 @@
+package inputCheck;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,8 +13,10 @@ public class Cheker {
 	private Task task;
 	private LogWriter log;
 	private ArrayList<String> TP_IDs;
+	private ArrayList<File> filesToCheck;
 	
 	public Cheker(int TASK, ArrayList<File> files) {
+		this.filesToCheck = files;
 		
 		task = new Task();
 		
@@ -43,17 +46,22 @@ public class Cheker {
 			task.setIDcolName1("LEI_LEI");
 			task.setIDcolName2("SEC_CIK");
 		}
-		
-		check(files);
+			
 	}
 	
-	private void check(ArrayList<File> files){
-				
+	public boolean check(){
+		return this.check(this.filesToCheck);
+	}
+	
+	private boolean check(ArrayList<File> files){
+		
+		boolean errorFound = false;
+		
 		for (File f:files){
 			if (isTPfile(f)){
 				System.out.println("\n***Start checking TP file: "+f);
 				openLog(f);
-				checkTP(f);
+				errorFound = checkTP(f);
 				closeLog();
 				System.out.println("End checking TP file: "+f);
 			}
@@ -70,11 +78,13 @@ public class Cheker {
 			if (isTNfile(f)){
 				System.out.println("\n***Start checking TN file: "+f);
 				openLog(f);				
-				checkTN(f);
+				errorFound = checkTN(f);
 				closeLog();
 				System.out.println("End checking TN file: "+f);
 			}
 		}
+		
+		return errorFound;
 	}
 	
 	private boolean isTPfile(File f){
@@ -85,10 +95,9 @@ public class Cheker {
 		return f.getName().toUpperCase().contains("_TN");
 	}
 	
-	private void checkTN(File file){
+	private boolean checkTN(File file){
 		TreeSet<String> addSuccess = new TreeSet<String>();
-		
-		boolean success = true;
+		boolean errorFound = false;
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
@@ -97,7 +106,7 @@ public class Cheker {
 			
 			if (!line.trim().equalsIgnoreCase(task.getIDcolName1())){
 				System.err.println("Warning: possibly no header");
-				success = false;
+				errorFound = true;
 			}
 			
 			int lineCount = 2;
@@ -108,19 +117,19 @@ public class Cheker {
 				
 				if (line.isEmpty()){
 					System.err.println("Warning on line "+lineCount+": empty line");
-					success = false;
+					errorFound = true;
 				}
 				else if (!addSuccess.add(line)){ // the add() returns false if such item exists
 					System.err.println("Error on line "+lineCount+": duplicate entry -- "+line);
-					success = false;
+					errorFound = true;
 				}
 				else if (!this.task.getID_list1().contains(line)){
 					System.err.println("Error on line "+lineCount+": ID not found in "+task.getName1()+" -- "+line);
-					success = false;
+					errorFound = true;
 				}
 				else if (TP_IDs != null && TP_IDs.contains(line)){
 					System.err.println("Error on line "+lineCount+": ID is present in both *_TP and *_TN files -- "+line);
-					success = false;
+					errorFound = true;
 				}
 				
 				lineCount++;
@@ -128,19 +137,22 @@ public class Cheker {
 			
 			br.close();
 			
-			if (success)
+			if (!errorFound)
 				System.out.println("Success! No errors found.");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		return errorFound;
 	}
 
-	private void checkTP(File file){
+	private boolean checkTP(File file){
 		TreeSet<String> addSuccess = new TreeSet<String>();
 		TP_IDs = new ArrayList<String>();
-		boolean success = true;
+		
+		boolean errorFound = false;
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
@@ -151,7 +163,7 @@ public class Cheker {
 			// check header
 			if (!tokens[0].equalsIgnoreCase(task.getIDcolName1()) || !tokens[1].equalsIgnoreCase(task.getIDcolName2())){
 				System.err.println("Warning: no or wrong header");
-				success = false;
+				errorFound = false;
 			}
 			
 			int lineCount = 2;
@@ -184,30 +196,30 @@ public class Cheker {
 								
 				if (line.isEmpty()){
 					System.err.println("Warning on line "+lineCount+": empty line");
-					success = false;
+					errorFound = true;
 				}
 				else if (elements != task.getElemNum()){
 					System.err.println("Error on line "+lineCount+": wrong number of elements -- "+line);
-					success = false;
+					errorFound = true;
 				}
 				else if (!addSuccess.add(line)){ // add returns false if such item exists
 					System.err.println("Error on line "+lineCount+": duplicate entry -- "+line);
-					success = false;
+					errorFound = true;
 				}				
 				else{
 					if (!this.task.getID_list1().contains(ID1)){
 						System.err.println("Error on line "+lineCount+": ID not found in "+task.getName1()+" -- "+ID1);
-						success = false;
+						errorFound = true;
 					}
 					
 					if (!this.task.getID_list2().contains(ID2)){
 						System.err.println("Error on line "+lineCount+": ID not found in "+task.getName2()+" -- "+ID2);
-						success = false;
+						errorFound = true;
 					}
 					
 					if (this.task.getID_list3() != null && !this.task.getID_list3().contains(ID3)){
 						System.err.println("Error on line "+lineCount+": ID not found in "+task.getName3()+" -- "+ID3);
-						success = false;
+						errorFound = true;
 					}
 				}
 				
@@ -217,13 +229,15 @@ public class Cheker {
 			}
 			
 			br.close();
-			if (success)
+			if (!errorFound)
 				System.out.println("Success! No errors found.");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		return errorFound;
 	}
 	
 	// remove whitespaces 

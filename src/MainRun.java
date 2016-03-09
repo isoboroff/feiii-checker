@@ -1,3 +1,4 @@
+package inputCheck;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -12,18 +13,26 @@ public class MainRun {
 	public static final int TASK2 = 2;
 	public static final int TASK3 = 3;
 	public static final int TASK4 = 4;
-	
+		
 	private int TASK = 0;
 	
 	public static void main(String[] args) {
+				
 		MainRun mr = new MainRun();
 				
-		mr.processArgs(args);			
+		boolean errorFound = mr.processArgs(args);			
 			
-		new Cheker(mr.TASK, mr.getArgFiles(args));		
+		if (errorFound)
+			System.exit(1); // exit with error
+		
+		Cheker ch = new Cheker(mr.TASK, mr.getArgFiles(args));
+		
+		errorFound = ch.check();
+				
+		System.exit(errorFound ? 1 : 0); // exit with error if errors found
 	}
 	
-	private void processArgs(String[] argsStr){
+	private boolean processArgs(String[] argsStr){
 		ArrayList<String> args = new ArrayList<String>();
 		
 		for (String s:argsStr)
@@ -38,24 +47,24 @@ public class MainRun {
 		else if (args.contains(t4))
 			TASK = TASK4;
 		
-		checkArgs(args);
+		return checkArgs(args);
 		
 	}
 
-	private void checkArgs(ArrayList<String> args){
-		boolean exit = false;
+	private boolean checkArgs(ArrayList<String> args){
+		boolean errorFound = false;
 		
 		if (args.size() == 0){
 			System.err.println("No arguments.");
-			exit = true;
+			errorFound = true;
 		}
 		else if (TASK == 0){
 			System.err.println("No task argument (-t1|t2|t3|t4).");
-			exit = true;
+			errorFound = true;
 		}
 		else if (args.size() > 3 || args.size() < 2){
 			System.err.println("Wrong number of arguments.");
-			exit = true;
+			errorFound = true;
 		}		
 		else if (args.size() <= 3){
 			ArrayList<String> files = new ArrayList<String>(2);
@@ -67,7 +76,7 @@ public class MainRun {
 				File f = new File(arg);
 				if (!f.exists()){
 					System.err.println("File doesn't not exist: "+f);
-					exit = true;
+					errorFound = true;
 				}
 				
 				files.add(f.getName());				
@@ -79,26 +88,27 @@ public class MainRun {
 			
 			if (!correctFileName){
 				System.err.println("Filename(s) don't satisfy naming rule: "+files);
-				exit = true;
+				errorFound = true;
 			}
 			
 			if (!correctVersion){
 				System.err.println("*_TP and *_TN are of different version: "+files);
-				exit = true;
+				errorFound = true;
 			}
 			
 			if (!correctOrgID){
 				System.err.println("*_TP and *_TN have different ORG ID: "+files);
-				exit = true;
+				errorFound = true;
 			}
 			
 		}
 		
-		if (exit){
-			printUsage();			
-			System.exit(0);
-		}
+		if (errorFound)
+			printUsage();
+			
 		
+		
+		return errorFound;
 	}
 	
 	private boolean checkFileName(ArrayList<String> files){

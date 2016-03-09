@@ -1,3 +1,4 @@
+package inputCheck;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,6 +45,9 @@ public class Task {
 
 	
 	public ArrayList<String> getID_list3() {
+		if (this.name3 == null)
+			return null;
+		
 		if (ID_list3 == null)
 			this.ID_list3  = getIDList(this.name3+".csv", this.getIDCol(this.name3));
 		return this.ID_list3;
@@ -126,7 +130,7 @@ public class Task {
 		if (!new File(file).exists()){
 			System.err.println("Error: file doesn't exist: "+file);
 			System.err.println("FFIEC.csv, LEI.csv, and SEC.csv must be in the same directory with the checker.");
-			System.exit(0);
+			System.exit(1);
 		}
 		
 		ArrayList<String> list = new ArrayList<String>();
