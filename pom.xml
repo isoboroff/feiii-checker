@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>gov.nist.feiii</groupId>
-  <artifactId>inputChecker</artifactId>
+  <artifactId>inputCheck</artifactId>
   <packaging>jar</packaging>
   <version>2.0-SNAPSHOT</version>
-  <name>inputChecker</name>
+  <name>inputCheck</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -15,4 +15,20 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>inputCheck.MainRun</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
