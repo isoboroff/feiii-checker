@@ -202,9 +202,9 @@ public class MainRun {
 		ArrayList<File> files = new ArrayList<File>(2);
 		
 		for (int i=0; i<args.length; i++){
-			if (args[i].contains("-d"))
+			if (args[i].trim().equalsIgnoreCase("-d"))
 				files.add(0, new File(args[i+1])); // first file in the list is the data directory			
-			else if (args[i].contains("-t"))
+			else if (args[i].trim().equalsIgnoreCase("-t"))
 				files.add(new File(args[i+1]));			
 		}
 		
