@@ -30,11 +30,11 @@ public class Task {
 	private ArrayList<String> ID_list2;
 	private ArrayList<String> ID_list3;
 	
-	private File dataDir;
+	private String dataDir;
 	
 	
-	public Task(File file) {
-		this.dataDir = file;
+	public Task(String dataDir) {
+		this.dataDir = dataDir;
 		
 	}
 
@@ -122,7 +122,7 @@ public class Task {
 	 * LEI has ID in the third column;
 	 */
 	private int getIDCol(String name){
-		if (name.equalsIgnoreCase("LEI"))
+		if (name.equalsIgnoreCase(MainRun.LEI))
 			return 2;
 		else
 			return 0;
@@ -136,14 +136,8 @@ public class Task {
 		File dataFile = new File(file);
 		
 		if (this.dataDir != null)
-			dataFile = new File(this.dataDir.getPath()+File.separator+file);
-		
-		if (!dataFile.exists()){
-			System.err.println("Error: file doesn't exist: "+file);
-			System.err.println("FFIEC.csv, LEI.csv, and SEC.csv must be in the same directory with the checker.");
-			System.exit(1);
-		}
-		
+			dataFile = new File(this.dataDir+File.separator+file);
+				
 		ArrayList<String> list = new ArrayList<String>();
 		
 		try {
