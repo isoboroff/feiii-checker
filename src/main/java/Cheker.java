@@ -15,36 +15,37 @@ public class Cheker {
 	private ArrayList<String> TP_IDs;
 	private ArrayList<File> filesToCheck;
 	
-	public Cheker(int TASK, ArrayList<File> files) {
+	
+	public Cheker(int TASK, String dataDir, ArrayList<File> files) {
 		this.filesToCheck = files;
 		
-		task = new Task(files.get(0)); // pass the data directory
+		task = new Task(dataDir); // pass the data directory
 		
 		if (TASK == MainRun.TASK1){
-			task.setName1("FFIEC");
-			task.setName2("LEI");
-			task.setIDcolName1("FFIEC_IDRSSD");
-			task.setIDcolName2("LEI_LEI");			
+			task.setName1(MainRun.FFIEC);
+			task.setName2(MainRun.LEI);
+			task.setIDcolName1(MainRun.FFIEC_ID);
+			task.setIDcolName2(MainRun.LEI_ID);			
 		}
 		else if (TASK == MainRun.TASK2){
-			task.setName1("FFIEC");
-			task.setName2("SEC");
-			task.setIDcolName1("FFIEC_IDRSSD");
-			task.setIDcolName2("SEC_CIK");
+			task.setName1(MainRun.FFIEC);
+			task.setName2(MainRun.SEC);
+			task.setIDcolName1(MainRun.FFIEC_ID);
+			task.setIDcolName2(MainRun.SEC_ID);
 		}
 		else if (TASK == MainRun.TASK3){			
-			task.setName1("FFIEC");
-			task.setName2("LEI");
-			task.setName3("SEC");
-			task.setIDcolName1("FFIEC_IDRSSD");
-			task.setIDcolName2("LEI_LEI");
-			task.setIDcolName3("SEC_CIK");
+			task.setName1(MainRun.FFIEC);
+			task.setName2(MainRun.LEI);
+			task.setName3(MainRun.SEC);
+			task.setIDcolName1(MainRun.FFIEC_ID);
+			task.setIDcolName2(MainRun.LEI_ID);
+			task.setIDcolName3(MainRun.SEC_ID);
 		}
 		else if (TASK == MainRun.TASK4){			
-			task.setName1("LEI");
-			task.setName2("SEC");
-			task.setIDcolName1("LEI_LEI");
-			task.setIDcolName2("SEC_CIK");
+			task.setName1(MainRun.LEI);
+			task.setName2(MainRun.SEC);
+			task.setIDcolName1(MainRun.LEI_ID);
+			task.setIDcolName2(MainRun.SEC_ID);
 		}
 			
 	}
