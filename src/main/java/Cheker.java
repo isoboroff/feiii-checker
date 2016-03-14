@@ -162,7 +162,9 @@ public class Cheker {
 			String[] tokens = cleanLine(line).split(",");
 			
 			// check header
-			if (!tokens[0].equalsIgnoreCase(task.getIDcolName1()) || !tokens[1].equalsIgnoreCase(task.getIDcolName2())){
+			if (tokens.length < 2 || tokens.length > 3 ||
+				!tokens[0].equalsIgnoreCase(task.getIDcolName1()) ||
+				!tokens[1].equalsIgnoreCase(task.getIDcolName2())){
 				System.err.println("Warning: no or wrong header");
 				errorFound = false;
 			}
