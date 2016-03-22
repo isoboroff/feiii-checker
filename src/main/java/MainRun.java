@@ -92,7 +92,7 @@ public class MainRun {
 				TASK = TASK2;
 			else if (cmd.hasOption(t3))
 				TASK = TASK3;
-			else if (cmd.hasOption(t3))
+			else if (cmd.hasOption(t4))
 				TASK = TASK4;
 						
 			if (args.length == 0){
